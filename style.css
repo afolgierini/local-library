@@ -1,0 +1,57 @@
+.header{
+    margin-top: 3.8rem;
+}
+
+.main{
+    margin-top: 5.2rem;
+}
+
+.button-primary.delete{
+    background-color: rgb(177, 37, 37);
+    border-color: rgb(177, 37, 37);
+    padding: 0 1rem;
+}
+
+.button.bookstatus.read{
+    padding: 0 1rem;
+    color: rgb(14, 129, 14);
+    border-color: rgb(14, 129, 14);
+}
+
+.button.bookstatus.notread{
+    padding: 0 1rem;
+    color: rgb(177, 37, 37);
+    border-color: rgb(177, 37, 37);
+}
+
+.button.bookstatus:hover{
+    color: rgb(88, 88, 88);
+    border-color: rgb(88, 88, 88);
+}
+
+.button-primary.delete:hover{
+    background-color: rgb(148, 41, 41);
+    border-color: rgb(148, 41, 41);
+}
+
+.button-primary.delete:focus {
+   background-color: rgb(148, 41, 41);
+   border-color: rgb(148, 41, 41);
+}
+
+body{
+    background-color: rgb(182, 182, 182);
+    -webkit-user-select: none; 
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media(max-width: 46rem){
+    body{
+        text-align: center;
+    }
+}
+
+td, th{
+    border-bottom: 1px solid rgb(117, 117, 117);
+}
