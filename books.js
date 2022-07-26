@@ -1,7 +1,7 @@
 // Array that store books.
-const books = [];
+let books = [];
 
-// Function constructor for Book objects.
+// Constructor for Book objects.
 function Book(title, author, numPages, isRead) {
     this.title = title;
     this.author = author;
@@ -9,15 +9,16 @@ function Book(title, author, numPages, isRead) {
     this.isRead = isRead;
 };
 
-// Function that uses the function constructor to create a new book object and push it to the books array.
+// Calls the constructor to create a new book object and push it to the books array.
 function storeBook(title, author, numPages, isRead) {
     books.push(new Book(title, author, numPages, isRead));
 };
 
 // Insert the books into the table.
-const appendBook = (output) => document.getElementById('bookTable').insertAdjacentHTML('afterbegin', output);
+const appendBook = (output) => 
+    document.getElementById('bookTable').insertAdjacentHTML('afterbegin', output);
 
-// Function that prints all books in the books array.
+// Prints all books in the books array.
 const renderBooks = (books) => {
     for(i = 0; i < books.length; i++){
         let output;
@@ -40,7 +41,7 @@ const renderBooks = (books) => {
     };   
 };
 
-// Function that receives the current object index and changes the read status.
+// Receives the current object index and changes the read status.
 const statusChange = (currentBook) => {
     if(books[currentBook].isRead || books[currentBook].isRead === 'true') {
         books[currentBook].isRead = false;
@@ -52,13 +53,22 @@ const statusChange = (currentBook) => {
     }
 };
 
-//Function that delete a book from the books array.
+// Delete a book from the books array.
 const deleteBook = (currentBook) => books.splice(currentBook, 1);
 
-// Function that clears the table.
+// Clears the table.
 const clearTable = () => document.getElementById('bookTable').innerHTML = "";
 
-//Function that resets the form values.
+// Default value for the books array.
+const defaultBooks = () => 
+    [
+        {title: 'The Hobbit', author: 'J.R.R. Tolkien', numPages: 295, isRead: true},
+        {title: 'Clean Code', author: 'R.C. Martin', numPages: 457, isRead: true},
+        {title: 'The Da Vinci Code', author: 'Dan Brown', numPages: 554, isRead: false}
+    ];
+
+
+// Resets the form values.
 const resetForm = () => {
     document.getElementById('bookTitle').value = '';
     document.getElementById('bookAuthor').value = '';
@@ -66,19 +76,39 @@ const resetForm = () => {
     document.getElementById('bookRead').value = true;
 };
 
-// Function that extract the object index from the button id.
+// Extract the object index from the button id.
 const getObjectIndex = (books) => +event.target.id.substring(9);
 
-//Function that inserts some books as examples.
-const insertDefaultBooks = () => {
-    new storeBook('The Hobbit', 'J.R.R. Tolkien', 295, true); 
-    new storeBook('Clean Code', 'R.C. Martin', 457, true);
-    new storeBook('The Da Vinci Code', 'Dan Brown', 554, false);
-};
+// Inserts some books as examples.
+const insertDefaultBooks = () => defaultBooks().forEach(book => 
+    storeBook(book.title, book.author, book.numPages, book.isRead));
 
-const saveLocalStorage = () => localStorage.setItem('books', JSON.stringify(books));
 
-// Function that adds event listeners to the buttons.
+/* >>>>>>>>>>>>>>  LOCAL STORAGE <<<<<<<<<<<<<<*/
+    // Saves the books array in the local storage.
+    const saveLocalStorage = () => localStorage.setItem('books', JSON.stringify(books));
+
+    // Loads the books array from the local storage. 
+    const getLocalStorage = () => localStorage.getItem('books') !== null ? 
+        books = JSON.parse(localStorage.getItem('books')) : insertDefaultBooks();
+
+    // Updates the books array.
+    const updateBooks = () => {
+        getLocalStorage();
+        clearTable();
+        renderBooks(books);
+        buttonsEventHandler();
+    };
+
+    // Updates the books array and the local storage.
+    const updateLocalStorage = () => {
+        saveLocalStorage();
+        updateBooks();
+    };
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+
+// Adds event listeners to the buttons.
 const buttonsEventHandler = () => {
     statusChangeEventHandler();
     bookRemovalEventHandler();
@@ -90,6 +120,7 @@ const statusChangeEventHandler = () => {
     document.querySelectorAll('.bookstatus').forEach(item => {
         item.addEventListener('mouseup', e => {
             statusChange(getObjectIndex(books));
+            updateLocalStorage();
             clearTable();
             renderBooks(books);
             buttonsEventHandler();
@@ -102,6 +133,7 @@ const bookRemovalEventHandler = () => {
     document.querySelectorAll('.delete').forEach(item => {
         item.addEventListener('mouseup', e => {
             deleteBook(getObjectIndex(books));
+            updateLocalStorage();
             clearTable();
             renderBooks(books);
             buttonsEventHandler();
@@ -126,7 +158,8 @@ const bookAdditionEventHandler = () => {
               return;
         }else{
             storeBook(bookTitle, bookAuthor, bookPages, bookRead);
-            clearTable();           
+            updateLocalStorage();
+            clearTable();        
             renderBooks(books);
             resetForm();
             buttonsEventHandler();   
@@ -136,7 +169,7 @@ const bookAdditionEventHandler = () => {
 
 // Function that initializes the program.
 const init = () => {
-    insertDefaultBooks();
+    getLocalStorage();
     renderBooks(books);
     buttonsEventHandler();
 };
