@@ -7,21 +7,18 @@ function Book(title, author, numPages, isRead) {
     this.author = author;
     this.numPages = numPages;
     this.isRead = isRead;
-}
+};
 
 // Function that uses the function constructor to create a new book object and push it to the books array.
-function storeBook(title, author, numPages, isRead){
+function storeBook(title, author, numPages, isRead) {
     books.push(new Book(title, author, numPages, isRead));
-}
+};
 
 // Insert the books into the table.
-function appendBook(output){ 
-    const bookTable = document.getElementById('bookTable');
-    bookTable.insertAdjacentHTML('afterbegin', output);
-}
+const appendBook = (output) => document.getElementById('bookTable').insertAdjacentHTML('afterbegin', output);
 
 // Function that prints all books in the books array.
-function renderBooks(books){
+const renderBooks = (books) => {
     for(i = 0; i < books.length; i++){
         let output;
         output = "";       
@@ -40,11 +37,11 @@ function renderBooks(books){
             Delete</button></td>`;
         output = `<tr>${output}</tr>`;
         appendBook(output);
-    }   
-}
+    };   
+};
 
-// Function that receives the current object index and changes the status of a book to read or not read.
-function statusChange(currentBook){
+// Function that receives the current object index and changes the read status.
+const statusChange = (currentBook) => {
     if(books[currentBook].isRead || books[currentBook].isRead === 'true') {
         books[currentBook].isRead = false;
         return;
@@ -53,79 +50,72 @@ function statusChange(currentBook){
         books[currentBook].isRead = true;
         return;
     }
-}
+};
 
 //Function that delete a book from the books array.
-function deleteBook(currentBook){
-    books.splice(currentBook, 1);
-}
+const deleteBook = (currentBook) => books.splice(currentBook, 1);
 
 // Function that clears the table.
-function clearTable(){
-    const bookTable = document.getElementById('bookTable');
-    bookTable.innerHTML = "";
-}
+const clearTable = () => document.getElementById('bookTable').innerHTML = "";
 
 //Function that resets the form values.
-function resetForm(){
+const resetForm = () => {
     document.getElementById('bookTitle').value = '';
     document.getElementById('bookAuthor').value = '';
     document.getElementById('bookPages').value = '';
     document.getElementById('bookRead').value = true;
-}
+};
 
 // Function that extract the object index from the button id.
-function getObjectIndex(books){
-    return Number(event.target.id.substring(9));
-}
+const getObjectIndex = (books) => +event.target.id.substring(9);
 
 //Function that inserts some books as examples.
-function insertDefaultBooks(){
+const insertDefaultBooks = () => {
     new storeBook('The Hobbit', 'J.R.R. Tolkien', 295, true); 
     new storeBook('Clean Code', 'R.C. Martin', 457, true);
     new storeBook('The Da Vinci Code', 'Dan Brown', 554, false);
-}
+};
+
+const saveLocalStorage = () => localStorage.setItem('books', JSON.stringify(books));
 
 // Function that adds event listeners to the buttons.
-function buttonsEventHandler(){
+const buttonsEventHandler = () => {
     statusChangeEventHandler();
     bookRemovalEventHandler();
     bookAdditionEventHandler();
-}
+};
 
 // Read/Not read button event handler.
-function statusChangeEventHandler(){
-    const bookStatusBtn = document.querySelectorAll('.bookstatus');
-    for(i = 0; i < bookStatusBtn.length; i++){
-        bookStatusBtn[i].addEventListener('mouseup', e => {
+const statusChangeEventHandler = () => {
+    document.querySelectorAll('.bookstatus').forEach(item => {
+        item.addEventListener('mouseup', e => {
             statusChange(getObjectIndex(books));
             clearTable();
             renderBooks(books);
             buttonsEventHandler();
         }
-    )};
-}
+    )});
+};
 
 // Delete button event handler.
-function bookRemovalEventHandler(){
-    const bookDeleteBtn = document.querySelectorAll('.delete');
-    for(i = 0; i < bookDeleteBtn.length; i++){
-        bookDeleteBtn[i].addEventListener('mouseup', e => {
+const bookRemovalEventHandler = () => {
+    document.querySelectorAll('.delete').forEach(item => {
+        item.addEventListener('mouseup', e => {
             deleteBook(getObjectIndex(books));
             clearTable();
             renderBooks(books);
             buttonsEventHandler();
         }
-    )};
-}
+    )});
+};
 
 // Add Book button event handler.
-function bookAdditionEventHandler(){
+const bookAdditionEventHandler = () => {
     const bookAddBtn = document.getElementById('addBook');
     bookAddBtn.addEventListener('mouseup', e => {
         let bookTitle = document.getElementById('bookTitle').value;
         let bookAuthor = document.getElementById('bookAuthor').value;
-        let bookPages = Number(document.getElementById('bookPages').value);
+        let bookPages = +document.getElementById('bookPages').value;
         let bookRead = document.getElementById('bookRead').value;
         
         if(bookTitle === '' || bookTitle === undefined || 
@@ -142,11 +132,12 @@ function bookAdditionEventHandler(){
             buttonsEventHandler();   
         }
     }
-)}
+)};
 
 // Function that initializes the program.
-function init(){
+const init = () => {
     insertDefaultBooks();
     renderBooks(books);
     buttonsEventHandler();
-}init();
+};
+init();
