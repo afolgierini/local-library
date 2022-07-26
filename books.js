@@ -143,8 +143,7 @@ const bookRemovalEventHandler = () => {
 
 // Add Book button event handler.
 const bookAdditionEventHandler = () => {
-    const bookAddBtn = document.getElementById('addBook');
-    bookAddBtn.addEventListener('mouseup', e => {
+    document.getElementById('addBook').addEventListener('mouseup', e => {
         let bookTitle = document.getElementById('bookTitle').value;
         let bookAuthor = document.getElementById('bookAuthor').value;
         let bookPages = +document.getElementById('bookPages').value;
